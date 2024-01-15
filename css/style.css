@@ -4,9 +4,26 @@
     box-sizing: border-box;
 }
 
+.button-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-container button {
+    margin: 20px;
+}
+
+.button-container button:hover {
+    cursor: pointer;
+}
+
 #container {
-    max-height: 340px;
-    max-width: 329.5px;
+    height: 500px;
+    max-height: 500px;
+    width: 500px;
+    max-width: 500px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -15,6 +32,5 @@
 }
 
 #container div {
-    height: 20px;
-    width: 20px;
+    border: 1px solid rgba(143, 138, 138, 0.1);
 }
