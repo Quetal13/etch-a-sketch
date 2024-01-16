@@ -1,6 +1,10 @@
 const changeButton = document.getElementById("change");
+const colorButton = document.getElementById("color");
+const changeColorButton = document.getElementById("change-color");
 const rainbowButton = document.getElementById("rainbow");
 const darkeningButton = document.getElementById("darkening");
+const eraserButton = document.getElementById("erase");
+const clearButton = document.getElementById("clear");
 const container = document.getElementById("container");
 
 let gridNumber = 16;
@@ -8,6 +12,7 @@ let defaultColor = 'rgb(41,145,255)';
 let color = defaultColor;
 let rainbowMode = false;
 let darkeningMode = false;
+let eraserMode = false;
 
 //Create a function that makes the div grid
 function createDivs(numberOfDivs){
@@ -15,13 +20,21 @@ function createDivs(numberOfDivs){
         const newDiv = document.createElement('div');
         //Set up a hover effect that changes the div color when the user mouse hover it.
         newDiv.addEventListener('mouseover', () => {
-            if (!rainbowMode && !darkeningMode) {
-                color = defaultColor;
+            if (!rainbowMode && !darkeningMode && !eraserMode) {
+                color = changeColorButton.value;
             } else if (rainbowMode) {
                 color = getRandomColor();
             } else if (darkeningMode) {
-                color = darkenColor(color);
+                color = newDiv.getAttribute('data-color');
+                if (!color) {
+                    color = 'hsl(0,0%,100%)';
+                }
+            color = darkenColor(color);
+            newDiv.setAttribute('data-color', color);
+            } else if (eraserMode) {
+                color = 'white';
             }
+
             newDiv.style.backgroundColor = color;
         })
         newDiv.style.width = 'calc(100% / ' + gridNumber + ')';
@@ -51,6 +64,13 @@ changeButton.addEventListener('click', () => {
     }
 })
 
+//Add a button to set the default mode
+colorButton.addEventListener('click', () => {
+    rainbowMode = false;
+    darkeningMode = false;
+    eraserMode = false;
+    color = defaultColor;
+})
 
 //Add a rainbow mode
 //Add a turn on button
@@ -63,6 +83,7 @@ rainbowButton.addEventListener('click', () => {
     } else {
     rainbowMode = true;
     darkeningMode = false;
+    eraserMode = false;
     }
 });
 
@@ -83,6 +104,7 @@ darkeningButton.addEventListener('click', () => {
     } else {
         darkeningMode = true;
         rainbowMode = false;
+        eraserMode = false;
         color = 'hsl(0, 0%, 100%)';
     }
 });
@@ -95,3 +117,21 @@ function darkenColor(color) {
     l = Math.max(l - 10, 0);
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
+
+//Add a eraser button (Pending)
+eraserButton.addEventListener('click', () => {
+    if (eraserMode) {
+        eraserMode = false;
+    } else {
+        eraserMode = true;
+        rainbowMode = false;
+        darkeningMode = false;
+    }
+})
+
+//Add a clear button
+clearButton.addEventListener('click', () => {
+    deleteDivs();
+    createDivs(gridNumber * gridNumber);
+})
+//Replace change button for a bar.
