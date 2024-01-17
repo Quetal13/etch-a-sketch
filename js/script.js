@@ -14,34 +14,53 @@ let rainbowMode = false;
 let darkeningMode = false;
 let eraserMode = false;
 
+document.addEventListener('mousedown', startPainting);
+document.addEventListener('mouseup', stopPainting);
+
 //Create a function that makes the div grid
 function createDivs(numberOfDivs){
     for (let i = 0; i < numberOfDivs; i++) {
         const newDiv = document.createElement('div');
         //Set up a hover effect that changes the div color when the user mouse hover it.
-        newDiv.addEventListener('mouseover', () => {
-            if (!rainbowMode && !darkeningMode && !eraserMode) {
-                color = changeColorButton.value;
-            } else if (rainbowMode) {
-                color = getRandomColor();
-            } else if (darkeningMode) {
-                color = newDiv.getAttribute('data-color');
-                if (!color) {
-                    color = 'hsl(0,0%,100%)';
-                }
-            color = darkenColor(color);
-            newDiv.setAttribute('data-color', color);
-            } else if (eraserMode) {
-                color = 'white';
-            }
-
-            newDiv.style.backgroundColor = color;
-        })
+        newDiv.addEventListener('mousemove', paintDiv);
         newDiv.style.width = 'calc(100% / ' + gridNumber + ')';
         newDiv.style.height = 'calc(100% / ' + gridNumber + ')';
         container.appendChild(newDiv);
     }
 
+}
+
+//Create a function to paint while the mouse is pressed.
+let painting;
+
+function stopPainting() {
+    painting = false;
+}
+
+function startPainting() {
+    painting = true;
+    e.preventDefault();
+}
+
+function paintDiv(e) {
+    if (!painting) return;
+    e.preventDefault();
+    if (!rainbowMode && !darkeningMode && !eraserMode) {
+        color = changeColorButton.value;
+    } else if (rainbowMode) {
+        color = getRandomColor();
+    } else if (darkeningMode) {
+        color = e.target.getAttribute('data-color');
+        if (!color) {
+            color = 'hsl(0,0%,100%)';
+        }
+    color = darkenColor(color);
+    e.target.setAttribute('data-color', color);
+    } else if (eraserMode) {
+        color = 'white';
+    }
+
+    e.target.style.backgroundColor = color;
 }
 
 function deleteDivs() {
@@ -54,13 +73,17 @@ createDivs(gridNumber * gridNumber);
 //Add something which allows user to change the divs grid
 changeButton.addEventListener('click', () => {
     gridNumber = prompt('How many squares per side do you want to place?', '');
-    //Once the amount of divs was selected, erase the grid and create a new one in the same total space.
-    deleteDivs();
-    //Set a limit to the user input.
-    if (gridNumber <= 100 && gridNumber >= 1) {
-        createDivs(gridNumber * gridNumber);
+    if (!gridNumber) {
+
     } else {
-        alert('Please select a number lower than 100');
+    //Once the amount of divs was selected, erase the grid and create a new one in the same total space.
+        deleteDivs();
+    //Set a limit to the user input.
+        if (gridNumber <= 100 && gridNumber >= 1) {
+            createDivs(gridNumber * gridNumber);
+        } else {
+            alert('Please select a number lower than 100');
+        }
     }
 })
 
@@ -134,4 +157,5 @@ clearButton.addEventListener('click', () => {
     deleteDivs();
     createDivs(gridNumber * gridNumber);
 })
+
 //Replace change button for a bar.
