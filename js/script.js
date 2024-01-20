@@ -10,6 +10,7 @@ const container = document.getElementById("container");
 let gridNumber = 16;
 let defaultColor = 'rgb(41,145,255)'; 
 let color = defaultColor;
+let colorMode = false;
 let rainbowMode = false;
 let darkeningMode = false;
 let eraserMode = false;
@@ -37,7 +38,7 @@ function stopPainting() {
     painting = false;
 }
 
-function startPainting() {
+function startPainting(e) {
     painting = true;
     e.preventDefault();
 }
